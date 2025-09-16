@@ -1,15 +1,15 @@
-package model.entity;
+package oocl.example.todolist.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import model.vo.TodoRequest;
+import oocl.example.todolist.model.vo.TodoCreateRequest;
 
-@Data
-@AllArgsConstructor
 @Entity
 @Table(name = "t_todo")
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Todo {
 
@@ -17,9 +17,9 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String text;
-    private boolean completed;
+    private boolean done;
 
-    public Todo(TodoRequest todoRequest) {
-        this.text = todoRequest.getText();
+    public Todo(TodoCreateRequest todoCreateRequest) {
+        this.text = todoCreateRequest.getText();
     }
 }

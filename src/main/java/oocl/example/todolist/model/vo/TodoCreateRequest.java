@@ -1,10 +1,10 @@
-package model.vo;
+package oocl.example.todolist.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TodoRequest {
+public class TodoCreateRequest {
     private String text;
 }
