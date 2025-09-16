@@ -1,4 +1,4 @@
-create table t_todolist
+create table t_todo
 (
     id   bigint not null auto_increment,
     text varchar(255),

@@ -1,13 +1,10 @@
 package model.vo;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class TodoListRequest {
+public class TodoRequest {
     private String text;
-    private boolean completed;
 }
