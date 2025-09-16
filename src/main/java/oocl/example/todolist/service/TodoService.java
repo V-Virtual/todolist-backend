@@ -1,6 +1,7 @@
 package oocl.example.todolist.service;
 
 import oocl.example.todolist.exception.TodoIllegalCreateException;
+import oocl.example.todolist.exception.TodoNotFoundException;
 import oocl.example.todolist.model.entity.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,10 @@ public class TodoService {
     }
 
     public Todo getTodo(Long id) {
+        Todo todo = todoRepository.findById(id);
+        if(todo == null){
+            throw new TodoNotFoundException("Todo is not found");
+        }
         return todoRepository.findById(id);
     }
 

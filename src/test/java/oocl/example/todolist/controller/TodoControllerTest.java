@@ -87,6 +87,13 @@ class TodoControllerTest {
     }
 
     @Test
+    void should_return_not_found_when_get_todo_by_id_given_todo_not_exist() throws Exception {
+        mockMvc.perform(get("/todos/{id}", 1))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Todo is not found"));
+    }
+
+    @Test
     void should_return_todolist_when_create_todos() throws Exception {
         String requestBody = """
                 {
@@ -104,7 +111,7 @@ class TodoControllerTest {
     }
 
     @Test
-    void should_return_422_when_create_todo_given_text_is_empty() throws Exception {
+    void should_return_unprocessable_entity_when_create_todo_given_text_is_empty() throws Exception {
         String requestBody = """
                 {
                     "text": ""
