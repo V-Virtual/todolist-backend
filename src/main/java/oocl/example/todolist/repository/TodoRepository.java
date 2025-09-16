@@ -15,4 +15,6 @@ public interface TodoRepository {
     List<Todo> findAll();
 
     void updateTodo(Todo todo, Todo todoUpdate);
+
+    void deleteTodo(Todo todo);
 }

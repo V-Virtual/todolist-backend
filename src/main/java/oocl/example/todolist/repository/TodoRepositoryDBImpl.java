@@ -1,9 +1,9 @@
 package oocl.example.todolist.repository;
 
 import oocl.example.todolist.model.entity.Todo;
+import oocl.example.todolist.repository.dao.TodoJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import oocl.example.todolist.repository.dao.TodoJpaRepository;
 
 import java.util.List;
 
@@ -38,5 +38,10 @@ public class TodoRepositoryDBImpl implements TodoRepository {
         todo.setText(todoUpdate.getText());
         todo.setDone(todoUpdate.isDone());
         todoJpaRepository.save(todo);
+    }
+
+    @Override
+    public void deleteTodo(Todo todo) {
+        todoJpaRepository.delete(todo);
     }
 }

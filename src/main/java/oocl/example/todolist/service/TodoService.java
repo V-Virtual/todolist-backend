@@ -4,9 +4,9 @@ import oocl.example.todolist.exception.TodoIllegalCreateException;
 import oocl.example.todolist.exception.TodoIllegalUpdateException;
 import oocl.example.todolist.exception.TodoNotFoundException;
 import oocl.example.todolist.model.entity.Todo;
+import oocl.example.todolist.repository.TodoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import oocl.example.todolist.repository.TodoRepository;
 
 import java.util.List;
 
@@ -43,5 +43,10 @@ public class TodoService {
         Todo todo = getTodo(id);
         todoRepository.updateTodo(todo, todoUpdate);
         return todo;
+    }
+
+    public void deleteTodo(Long id) {
+        Todo todo = getTodo(id);
+        todoRepository.deleteTodo(todo);
     }
 }

@@ -1,6 +1,7 @@
 package oocl.example.todolist.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import oocl.example.todolist.repository.TodoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import oocl.example.todolist.repository.TodoRepository;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -71,7 +71,7 @@ class TodoControllerTest {
                     "text": "Learn Chinese"
                 }
                 """;
-        long id1 = createTodo(requestBody1);
+        createTodo(requestBody1);
         String requestBody2 = """
                 {
                     "id": 5,
@@ -79,10 +79,10 @@ class TodoControllerTest {
                     "done": true
                 }
                 """;
-        long id2 = createTodo(requestBody2);
-        mockMvc.perform(get("/todos/{id}", id2))
+        long id = createTodo(requestBody2);
+        mockMvc.perform(get("/todos/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id2))
+                .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.text").value("Learn Maths"))
                 .andExpect(jsonPath("$.done").value(false));
     }
@@ -205,5 +205,24 @@ class TodoControllerTest {
                         .content(requestBody2))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string("Todo Update should not be empty"));
+    }
+
+    @Test
+    void should_return_no_content_when_delete_todo_by_id() throws Exception {
+        String requestBody = """
+                {
+                    "text": "Learn Chinese"
+                }
+                """;
+        long id = createTodo(requestBody);
+        mockMvc.perform(delete("/todos/{id}", id))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void should_return_not_found_when_delete_todo_by_id_given_todo_not_exist() throws Exception {
+        mockMvc.perform(delete("/todos/{id}", 999))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Todo is not found"));
     }
 }
