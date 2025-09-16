@@ -67,6 +67,27 @@ class TodoControllerTest {
     }
 
     @Test
+    void should_return_todolist_when_get_todo_by_id() throws Exception {
+        String requestBody1 = """
+                {
+                    "text": "Learn Chinese"
+                }
+                """;
+        long id1 = createTodo(requestBody1);
+        String requestBody2 = """
+                {
+                    "text": "Learn Maths"
+                }
+                """;
+        long id2 = createTodo(requestBody2);
+        mockMvc.perform(get("/todos/{id}", id2))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id2))
+                .andExpect(jsonPath("$.text").value("Learn Maths"))
+                .andExpect(jsonPath("$.done").value(false));
+    }
+
+    @Test
     void should_return_todolist_when_add_todos() throws Exception {
         String requestBody = """
                 {
