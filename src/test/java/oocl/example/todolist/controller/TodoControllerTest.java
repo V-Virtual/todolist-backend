@@ -14,8 +14,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -88,7 +87,7 @@ class TodoControllerTest {
     }
 
     @Test
-    void should_return_todolist_when_add_todos() throws Exception {
+    void should_return_todolist_when_create_todos() throws Exception {
         String requestBody = """
                 {
                     "text": "Learn Spring Boot",
@@ -102,5 +101,19 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.text").value("Learn Spring Boot"))
                 .andExpect(jsonPath("$.done").value(false));
+    }
+
+    @Test
+    void should_return_422_when_create_todo_given_text_is_empty() throws Exception {
+        String requestBody = """
+                {
+                    "text": ""
+                }
+                """;
+        mockMvc.perform(post("/todos")
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string("Todo text should not be empty"));
     }
 }
