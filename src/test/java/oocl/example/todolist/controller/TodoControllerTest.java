@@ -1,12 +1,16 @@
 package oocl.example.todolist.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import oocl.example.todolist.repository.TodoRepository;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +30,40 @@ class TodoControllerTest {
     @BeforeEach
     void setUp() {
         todoRepository.setUp();
+    }
+
+    private long createTodo(String requestBody) throws Exception {
+        ResultActions resultActions = mockMvc.perform((post("/todos")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody)));
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        return new ObjectMapper().readTree(contentAsString).get("id").asLong();
+    }
+
+    @Test
+    void should_return_todolist_when_get_all_todos() throws Exception {
+        String requestBody1 = """
+                {
+                    "text": "Learn Chinese"
+                }
+                """;
+        long id1 = createTodo(requestBody1);
+        String requestBody2 = """
+                {
+                    "text": "Learn Maths"
+                }
+                """;
+        long id2 = createTodo(requestBody2);
+        mockMvc.perform(get("/todos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(id1))
+                .andExpect(jsonPath("$[0].text").value("Learn Chinese"))
+                .andExpect(jsonPath("$[0].done").value(false))
+                .andExpect(jsonPath("$[1].id").value(id2))
+                .andExpect(jsonPath("$[1].text").value("Learn Maths"))
+                .andExpect(jsonPath("$[1].done").value(false));
     }
 
     @Test

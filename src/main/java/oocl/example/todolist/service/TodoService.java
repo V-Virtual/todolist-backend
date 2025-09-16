@@ -14,6 +14,7 @@ public class TodoService {
     private TodoRepository todoRepository;
 
     public Todo createTodo(Todo todoCreate) {
+        todoCreate.setDone(false);
         return todoRepository.save(todoCreate);
     }
 
