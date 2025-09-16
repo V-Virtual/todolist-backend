@@ -1,7 +1,8 @@
 package oocl.example.todolist.controller;
 
 import oocl.example.todolist.model.entity.Todo;
-import oocl.example.todolist.model.vo.TodoCreateRequest;
+import oocl.example.todolist.model.request.TodoCreateRequest;
+import oocl.example.todolist.model.request.TodoUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +32,11 @@ public class TodoController {
     @GetMapping
     public ResponseEntity<List<Todo>> getTodoList(){
         return ResponseEntity.status(HttpStatus.OK).body(todoService.getAll());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Todo> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateRequest todoUpdateRequest){
+        Todo todoUpdate = new Todo(todoUpdateRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(todoService.updateTodo(id, todoUpdate));
     }
  }

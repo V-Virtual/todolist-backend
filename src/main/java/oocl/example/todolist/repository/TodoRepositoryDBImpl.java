@@ -32,4 +32,11 @@ public class TodoRepositoryDBImpl implements TodoRepository {
     public List<Todo> findAll() {
         return todoJpaRepository.findAll();
     }
+
+    @Override
+    public void updateTodo(Todo todo, Todo todoUpdate) {
+        todo.setText(todoUpdate.getText());
+        todo.setDone(todoUpdate.isDone());
+        todoJpaRepository.save(todo);
+    }
 }

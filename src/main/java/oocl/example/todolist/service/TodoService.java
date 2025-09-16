@@ -1,6 +1,7 @@
 package oocl.example.todolist.service;
 
 import oocl.example.todolist.exception.TodoIllegalCreateException;
+import oocl.example.todolist.exception.TodoIllegalUpdateException;
 import oocl.example.todolist.exception.TodoNotFoundException;
 import oocl.example.todolist.model.entity.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,14 @@ public class TodoService {
 
     public List<Todo> getAll() {
         return todoRepository.findAll();
+    }
+
+    public Todo updateTodo(long id, Todo todoUpdate) {
+        if(todoUpdate.getText() == null || todoUpdate.getText().isEmpty()){
+            throw new TodoIllegalUpdateException("Todo Update should not be empty");
+        }
+        Todo todo = getTodo(id);
+        todoRepository.updateTodo(todo, todoUpdate);
+        return todo;
     }
 }

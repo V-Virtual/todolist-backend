@@ -12,8 +12,7 @@ import oocl.example.todolist.repository.TodoRepository;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -75,7 +74,9 @@ class TodoControllerTest {
         long id1 = createTodo(requestBody1);
         String requestBody2 = """
                 {
-                    "text": "Learn Maths"
+                    "id": 5,
+                    "text": "Learn Maths",
+                    "done": true
                 }
                 """;
         long id2 = createTodo(requestBody2);
@@ -122,5 +123,87 @@ class TodoControllerTest {
                         .content(requestBody))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string("Todo text should not be empty"));
+    }
+
+    @Test
+    void should_return_todolist_when_update_todo() throws Exception {
+        String requestBody1 = """
+                {
+                    "text": "Learn Chinese"
+                }
+                """;
+        long id1 = createTodo(requestBody1);
+        String requestBody2 = """
+                {
+                    "text": "Learn Maths",
+                    "done": true
+                }
+                """;
+        mockMvc.perform(put("/todos/{id}", id1)
+                        .contentType("application/json")
+                        .content(requestBody2))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id1))
+                .andExpect(jsonPath("$.text").value("Learn Maths"))
+                .andExpect(jsonPath("$.done").value(true));
+    }
+
+    @Test
+    void should_return_todolist_when_update_todo_given_todo_id() throws Exception {
+        String requestBody1 = """
+                {
+                    "text": "Learn Chinese"
+                }
+                """;
+        long id1 = createTodo(requestBody1);
+        String requestBody2 = """
+                {
+                    "id": 5,
+                    "text": "Learn Maths",
+                    "done": true
+                }
+                """;
+        mockMvc.perform(put("/todos/{id}", id1)
+                        .contentType("application/json")
+                        .content(requestBody2))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id1))
+                .andExpect(jsonPath("$.text").value("Learn Maths"))
+                .andExpect(jsonPath("$.done").value(true));
+    }
+
+    @Test
+    void should_return_not_found_when_update_todo_given_todo_not_exist() throws Exception {
+        String requestBody = """
+                {
+                    "text": "Learn Maths",
+                    "done": true
+                }
+                """;
+        mockMvc.perform(put("/todos/{id}", 999)
+                        .contentType("application/json")
+                        .content(requestBody))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Todo is not found"));
+    }
+
+    @Test
+    void should_return_unprocessable_entity_when_update_todo_given_text_is_empty() throws Exception {
+        String requestBody1 = """
+                {
+                    "text": "Learn Chinese"
+                }
+                """;
+        long id1 = createTodo(requestBody1);
+        String requestBody2 = """
+                {
+                    "text": ""
+                }
+                """;
+        mockMvc.perform(put("/todos/{id}", id1)
+                        .contentType("application/json")
+                        .content(requestBody2))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(content().string("Todo Update should not be empty"));
     }
 }

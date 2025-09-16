@@ -1,4 +1,4 @@
-package oocl.example.todolist.model.vo;
+package oocl.example.todolist.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

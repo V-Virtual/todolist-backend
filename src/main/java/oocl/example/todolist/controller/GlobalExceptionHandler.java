@@ -1,6 +1,7 @@
 package oocl.example.todolist.controller;
 
 import oocl.example.todolist.exception.TodoIllegalCreateException;
+import oocl.example.todolist.exception.TodoIllegalUpdateException;
 import oocl.example.todolist.exception.TodoNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +19,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TodoNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleTodoNotFoundException(Exception e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(TodoIllegalUpdateException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public String handleTodoIllegalUpdateException(Exception e) {
         return e.getMessage();
     }
 }
