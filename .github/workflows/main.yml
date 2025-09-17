@@ -76,9 +76,6 @@ jobs:
                   restore-keys: |
                       ${{ runner.os }}-gradle-
 
-            - name: Make gradlew executable
-              run: chmod +x gradlew
-
             - name: Build application
               run: ./gradlew build -x test
 
@@ -89,22 +86,10 @@ jobs:
             - name: Deploy to Railway App Service
               run: |
                   echo "Starting deployment to Railway..."
-                  echo "Railway Token: ${RAILWAY_TOKEN:0:10}..."
-                  echo "Railway Project ID: ${RAILWAY_PROJECT_ID:0:10}..."
-                  echo "Railway Service ID: ${RAILWAY_SERVICE_ID:0:10}..."
-                  
-                  if [ -z "$RAILWAY_SERVICE_ID" ]; then
-                    echo "Error: RAILWAY_SERVICE_ID is not set"
-                    echo "Available Railway services:"
-                    railway service list || echo "Failed to list services"
-                    exit 1
-                  fi
-                  
-                  railway up --service "$RAILWAY_SERVICE_ID"
+                  railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}
               env:
                   RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
                   RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-                  RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
 
             - name: Health Check
               run: |
